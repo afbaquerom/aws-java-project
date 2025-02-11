@@ -11,7 +11,7 @@ exports.lambdaHandler = async (event) => {
         const fileContent = `This file was created for ${nombre}`;
 
         const params = {
-            Bucket: 'your-s3-bucket-name', // Replace with your S3 bucket name
+            Bucket: 'my-unique-s3-bucket-name', // Replace with your S3 bucket name
             Key: fileName,
             Body: fileContent,
         };
