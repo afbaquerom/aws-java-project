@@ -9,13 +9,13 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "sqs_queue_name" {
+variable "queue_name" {
   description = "The name of the SQS queue"
   type        = string
 }
 
-variable "lambda_function_name" {
-  description = "The name of the Lambda function"
+variable "api_gateway_name" {
+  description = "The name of the API Gateway"
   type        = string
 }
 
@@ -24,7 +24,7 @@ variable "ecs_service_name" {
   type        = string
 }
 
-variable "api_gateway_name" {
-  description = "The name of the API Gateway"
+variable "lambda_function_name" {
+  description = "The name of the Lambda function"
   type        = string
 }

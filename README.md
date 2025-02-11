@@ -1,81 +1,87 @@
-# AWS Java Project
+# AWS Node.js Project
 
-This project is a complete AWS-based application built using Java. It integrates various AWS services including ECS, API Gateway, SQS, Lambda, and S3, along with unit testing and CI/CD using GitHub Actions.
+This project is a serverless application built on AWS that utilizes various services including ECS, API Gateway, SQS, Lambda, and S3. The application is designed to receive a name parameter via an API Gateway, send it to an SQS queue, trigger a Lambda function that creates a file in an S3 bucket, and log the process in CloudWatch.
 
 ## Project Structure
 
 ```
-aws-java-project
+aws-nodejs-project
 ├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── example
-│   │   │           └── App.java
-│   │   └── resources
-│   ├── test
-│       ├── java
-│       │   └── com
-│       │       └── example
-│       │           └── AppTest.java
-│       └── resources
+│   ├── index.js               # Entry point of the Node.js application
+│   ├── handlers
+│   │   └── lambdaHandler.js    # Lambda function handler for processing SQS messages
+│   ├── services
+│   │   └── sqsService.js       # Service for sending messages to SQS
+│   └── utils
+│       └── logger.js           # Logger utility for logging information
 ├── infrastructure
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── provider.tf
-├── .github
-│   └── workflows
-│       └── ci.yml
-├── build.gradle
-├── settings.gradle
-├── README.md
-└── .gitignore
+│   ├── main.tf                 # Main Terraform configuration file
+│   ├── variables.tf            # Input variables for Terraform
+│   ├── outputs.tf              # Outputs of the Terraform configuration
+│   └── modules
+│       ├── ecs
+│       │   └── ecs.tf          # ECS service and task definitions
+│       ├── api_gateway
+│       │   └── api_gateway.tf   # API Gateway configuration
+│       ├── sqs
+│       │   └── sqs.tf          # SQS queue configuration
+│       ├── lambda
+│       │   └── lambda.tf       # Lambda function configuration
+│       └── s3
+│           └── s3.tf           # S3 bucket configuration
+├── tests
+│   ├── unit
+│   │   └── index.test.js       # Unit tests for index.js
+│   └── integration
+│       └── integration.test.js  # Integration tests for the application
+├── package.json                 # npm configuration file
+├── terraform.tfvars             # Variable values for Terraform
+├── .gitignore                   # Files to be ignored by Git
+└── README.md                    # Project documentation
 ```
 
 ## Setup Instructions
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/yourusername/aws-java-project.git
-   cd aws-java-project
+1. **Clone the repository:**
+   ```
+   git clone <repository-url>
+   cd aws-nodejs-project
    ```
 
-2. **Configure AWS Credentials**
-   Ensure that your AWS credentials are configured in your environment. You can set them up using the AWS CLI:
-   ```bash
-   aws configure
+2. **Install dependencies:**
+   ```
+   npm install
    ```
 
-3. **Deploy Infrastructure**
-   Navigate to the `infrastructure` directory and run the following commands to deploy the AWS infrastructure using Terraform:
-   ```bash
-   cd infrastructure
+3. **Configure AWS credentials:**
+   Ensure that your AWS credentials are configured in your environment. You can set them up using the AWS CLI or by creating a `~/.aws/credentials` file.
+
+4. **Deploy the infrastructure:**
+   Navigate to the `infrastructure` directory and run:
+   ```
    terraform init
    terraform apply
    ```
 
-4. **Build the Java Application**
-   Use Gradle to build the application:
-   ```bash
-   cd ..
-   ./gradlew build
-   ```
+5. **Test the API:**
+   Once the infrastructure is deployed, you can test the API Gateway endpoint using tools like Postman or curl. Send a POST request with a JSON body containing the `nombre` parameter.
 
-5. **Run Unit Tests**
-   To ensure everything is working correctly, run the unit tests:
-   ```bash
-   ./gradlew test
-   ```
+## Architecture Overview
 
-## Usage
+- **API Gateway:** Exposes the HTTP endpoint for the application.
+- **ECS:** Hosts the Node.js application that handles incoming requests.
+- **SQS:** Receives messages from the API Gateway.
+- **Lambda:** Processes messages from the SQS queue and interacts with S3.
+- **S3:** Stores files created by the Lambda function.
+- **CloudWatch:** Logs the process for monitoring and debugging.
 
-Once the infrastructure is deployed, you can interact with the API Gateway endpoint to send requests. The endpoint will accept a parameter called `nombre`, which will be processed by the application.
+## Running Tests
 
-## Deployment
-
-The application is set up for continuous integration using GitHub Actions. The workflow defined in `.github/workflows/ci.yml` will automatically build and test the application on each push to the repository.
+To run the unit and integration tests, use the following command:
+```
+npm test
+```
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+This project is licensed under the MIT License.

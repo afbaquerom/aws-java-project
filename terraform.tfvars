@@ -1,0 +1,6 @@
+region = "us-east-1"
+bucket_name = "your-s3-bucket-name"
+queue_name = "your-sqs-queue-name"
+api_gateway_name = "your-api-gateway-name"
+ecs_service_name = "your-ecs-service-name"
+lambda_function_name = "your-lambda-function-name"
