@@ -1,13 +1,10 @@
 const AWS = require('aws-sdk');
-
 const sqs = new AWS.SQS();
 
-const QUEUE_URL = process.env.SQS_QUEUE_URL;
-
-const sendMessage = async (nombre) => {
+const sendMessageToQueue = async (queueUrl, messageBody) => {
     const params = {
-        MessageBody: JSON.stringify({ nombre }),
-        QueueUrl: QUEUE_URL,
+        QueueUrl: queueUrl,
+        MessageBody: JSON.stringify(messageBody),
     };
 
     try {
@@ -15,10 +12,10 @@ const sendMessage = async (nombre) => {
         return result.MessageId;
     } catch (error) {
         console.error('Error sending message to SQS:', error);
-        throw new Error('Could not send message to SQS');
+        throw error;
     }
 };
 
 module.exports = {
-    sendMessage,
+    sendMessageToQueue,
 };

@@ -1,35 +1,35 @@
 const request = require('supertest');
 const app = require('../../src/index'); // Assuming index.js exports an Express app
 const AWS = require('aws-sdk');
-const sqs = new AWS.SQS();
 
-jest.mock('aws-sdk', () => {
-    const mockSendMessage = jest.fn().mockReturnValue({
-        promise: jest.fn().mockResolvedValue({})
-    });
-
-    return {
-        SQS: jest.fn(() => ({
-            sendMessage: mockSendMessage
-        }))
-    };
-});
+jest.mock('aws-sdk');
 
 describe('Integration Tests', () => {
-    it('should send a message to SQS and trigger Lambda', async () => {
-        const nombre = 'TestName';
+    let sqsSendMessageMock;
 
+    beforeAll(() => {
+        sqsSendMessageMock = jest.fn().mockReturnValue({
+            promise: jest.fn().mockResolvedValue({})
+        });
+        AWS.SQS.prototype.sendMessage = sqsSendMessageMock;
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('should send a message to SQS when a request is made', async () => {
+        const nombre = 'testFile';
         const response = await request(app)
-            .post('/api/nombre') // Adjust the endpoint as per your API Gateway setup
+            .post('/your-api-endpoint') // Replace with your actual endpoint
             .send({ nombre });
 
         expect(response.status).toBe(200);
-        expect(response.body.message).toBe('Message sent to SQS');
-
-        // Verify that the SQS sendMessage was called with the correct parameters
-        expect(sqs().sendMessage).toHaveBeenCalledWith(expect.objectContaining({
+        expect(sqsSendMessageMock).toHaveBeenCalledWith(expect.objectContaining({
             MessageBody: JSON.stringify({ nombre }),
-            QueueUrl: expect.any(String) // Replace with your actual Queue URL if needed
+            QueueUrl: expect.any(String) // Replace with your actual queue URL if needed
         }));
     });
+
+    // Additional integration tests can be added here
 });

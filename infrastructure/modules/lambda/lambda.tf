@@ -1,12 +1,12 @@
-resource "aws_lambda_function" "sqs_processor" {
-  function_name = "sqsProcessor"
+resource "aws_lambda_function" "sqs_lambda" {
+  function_name = "sqs_lambda_function"
   handler       = "handlers/lambdaHandler.lambdaHandler"
   runtime       = "nodejs14.x"
   role          = aws_iam_role.lambda_exec.arn
-  source_code_hash = filebase64sha256("path/to/your/deployment/package.zip")
+  source_code_hash = filebase64sha256("path/to/your/lambda/package.zip")
 
   environment {
-    S3_BUCKET = aws_s3_bucket.file_storage.bucket
+    S3_BUCKET = aws_s3_bucket.file_bucket.bucket
   }
 
   depends_on = [aws_iam_role_policy_attachment.lambda_policy]
@@ -37,6 +37,14 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 
 resource "aws_lambda_event_source_mapping" "sqs_event" {
   event_source_arn = aws_sqs_queue.my_queue.arn
-  function_name    = aws_lambda_function.sqs_processor.arn
+  function_name    = aws_lambda_function.sqs_lambda.arn
   enabled          = true
+}
+
+resource "aws_sqs_queue" "my_queue" {
+  name = "my_queue"
+}
+
+output "lambda_function_arn" {
+  value = aws_lambda_function.sqs_lambda.arn
 }

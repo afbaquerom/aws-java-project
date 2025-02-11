@@ -2,21 +2,21 @@ const request = require('supertest');
 const app = require('../../src/index'); // Assuming index.js exports an Express app
 
 describe('API Gateway', () => {
-    it('should respond with 200 for valid requests', async () => {
+    it('should send a message to SQS when a request is made', async () => {
         const response = await request(app)
             .post('/your-endpoint') // Replace with your actual endpoint
-            .send({ nombre: 'TestName' });
+            .send({ nombre: 'testName' });
 
         expect(response.status).toBe(200);
-        // Add more assertions based on your response structure
+        expect(response.body).toEqual({ message: 'Message sent to SQS' });
     });
 
-    it('should return 400 for missing nombre parameter', async () => {
+    it('should return 400 if nombre is not provided', async () => {
         const response = await request(app)
             .post('/your-endpoint') // Replace with your actual endpoint
-            .send({}); // No nombre parameter
+            .send({});
 
         expect(response.status).toBe(400);
-        // Add more assertions based on your response structure
+        expect(response.body).toEqual({ error: 'nombre is required' });
     });
 });

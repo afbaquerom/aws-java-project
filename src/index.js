@@ -1,29 +1,29 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const sqsService = require('./services/sqsService');
-const logger = require('./utils/logger');
+const AWS = require('aws-sdk');
+const sqsHelper = require('./utils/sqsHelper');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
-
-app.post('/nombre', async (req, res) => {
-    const { nombre } = req.body;
+const apiGateway = async (event) => {
+    const { nombre } = event.queryStringParameters;
 
     if (!nombre) {
-        return res.status(400).json({ error: 'El parámetro "nombre" es requerido.' });
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: 'El parámetro "nombre" es requerido.' }),
+        };
     }
 
     try {
-        await sqsService.sendMessage(nombre);
-        res.status(200).json({ message: 'Mensaje enviado a la cola SQS.' });
+        await sqsHelper.sendMessage(nombre);
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'Petición recibida y procesada.' }),
+        };
     } catch (error) {
-        logger.error('Error al enviar mensaje a SQS:', error);
-        res.status(500).json({ error: 'Error interno del servidor.' });
+        console.error('Error al enviar mensaje a SQS:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Error interno del servidor.' }),
+        };
     }
-});
+};
 
-app.listen(PORT, () => {
-    logger.info(`Servidor escuchando en el puerto ${PORT}`);
-});
+exports.handler = apiGateway;

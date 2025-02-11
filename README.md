@@ -1,6 +1,6 @@
 # AWS Node.js Project
 
-This project is a serverless application built on AWS that utilizes various services including ECS, API Gateway, SQS, Lambda, and S3. The application is designed to receive a name parameter via an API Gateway, send it to an SQS queue, trigger a Lambda function that creates a file in an S3 bucket, and log the process in CloudWatch.
+This project is a serverless application built on AWS that utilizes various services including API Gateway, SQS, Lambda, and S3. The application is designed to receive a parameter called "nombre" through an API Gateway, send it to an SQS queue, trigger a Lambda function that creates a file with the provided name in an S3 bucket, and log the process in CloudWatch.
 
 ## Project Structure
 
@@ -10,10 +10,8 @@ aws-nodejs-project
 │   ├── index.js               # Entry point of the Node.js application
 │   ├── handlers
 │   │   └── lambdaHandler.js    # Lambda function handler for processing SQS messages
-│   ├── services
-│   │   └── sqsService.js       # Service for sending messages to SQS
 │   └── utils
-│       └── logger.js           # Logger utility for logging information
+│       └── sqsHelper.js        # Helper functions for SQS interactions
 ├── infrastructure
 │   ├── main.tf                 # Main Terraform configuration file
 │   ├── variables.tf            # Input variables for Terraform
@@ -34,53 +32,56 @@ aws-nodejs-project
 │   │   └── index.test.js       # Unit tests for index.js
 │   └── integration
 │       └── integration.test.js  # Integration tests for the application
-├── package.json                 # npm configuration file
-├── terraform.tfvars             # Variable values for Terraform
-├── .gitignore                   # Files to be ignored by Git
-└── README.md                    # Project documentation
+├── .github
+│   └── workflows
+│       └── ci-cd.yml          # CI/CD workflow for GitHub Actions
+├── package.json                # npm configuration file
+├── terraform.tfvars            # Variable values for Terraform
+├── README.md                   # Project documentation
+└── .gitignore                  # Files and directories to ignore by Git
 ```
 
 ## Setup Instructions
 
-1. **Clone the repository:**
-   ```
+1. **Clone the Repository**
+   ```bash
    git clone <repository-url>
    cd aws-nodejs-project
    ```
 
-2. **Install dependencies:**
-   ```
+2. **Install Dependencies**
+   ```bash
    npm install
    ```
 
-3. **Configure AWS credentials:**
+3. **Configure AWS Credentials**
    Ensure that your AWS credentials are configured in your environment. You can set them up using the AWS CLI or by creating a `~/.aws/credentials` file.
 
-4. **Deploy the infrastructure:**
-   Navigate to the `infrastructure` directory and run:
-   ```
+4. **Deploy Infrastructure**
+   Navigate to the `infrastructure` directory and run the following commands to deploy the infrastructure using Terraform:
+   ```bash
+   cd infrastructure
    terraform init
    terraform apply
    ```
 
-5. **Test the API:**
-   Once the infrastructure is deployed, you can test the API Gateway endpoint using tools like Postman or curl. Send a POST request with a JSON body containing the `nombre` parameter.
+5. **Run Tests**
+   To run the unit and integration tests, use the following command:
+   ```bash
+   npm test
+   ```
 
-## Architecture Overview
+## Usage
 
-- **API Gateway:** Exposes the HTTP endpoint for the application.
-- **ECS:** Hosts the Node.js application that handles incoming requests.
-- **SQS:** Receives messages from the API Gateway.
-- **Lambda:** Processes messages from the SQS queue and interacts with S3.
-- **S3:** Stores files created by the Lambda function.
-- **CloudWatch:** Logs the process for monitoring and debugging.
+Once the infrastructure is deployed, you can send a request to the API Gateway with the "nombre" parameter. The application will process the request, send the parameter to the SQS queue, and the Lambda function will create a file in the S3 bucket.
 
-## Running Tests
+## Logging
 
-To run the unit and integration tests, use the following command:
-```
-npm test
-```
+Logs for the Lambda function can be viewed in the AWS CloudWatch service. This will help you monitor the execution and troubleshoot any issues.
+
+## CI/CD
+
+The project includes a CI/CD pipeline defined in `.github/workflows/ci-cd.yml` that automates the testing and deployment process. Make sure to configure your GitHub repository settings to enable GitHub Actions.
 
 ## License
 
