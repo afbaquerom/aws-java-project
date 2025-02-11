@@ -17,7 +17,6 @@ module "lambda" {
 
 module "api_gateway" {
   source = "./modules/api_gateway"
-  lambda_function_arn = module.lambda.function_arn
 }
 
 module "ecs" {
