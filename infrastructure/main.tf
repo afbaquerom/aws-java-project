@@ -12,7 +12,6 @@ module "s3" {
 
 module "lambda" {
   source = "./modules/lambda"
-  s3_bucket = module.s3.bucket_name
 }
 
 module "api_gateway" {
