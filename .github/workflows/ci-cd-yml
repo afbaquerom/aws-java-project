@@ -1,28 +1,36 @@
-name: Terraform Apply
+name: 'CI/CD Pipeline'
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  apply:
+  terraform:
+    name: 'Terraform CI/CD'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 'Checkout GitHub Action'
         uses: actions/checkout@v2
 
-      - name: Set up Terraform
+      - name: 'Setup Terraform'
         uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.0
 
-      - name: Terraform Init
+      - name: 'Terraform Init'
         run: terraform init
         working-directory: ./terraform
 
-      - name: Terraform Apply
+      - name: 'Terraform Plan'
+        if: github.event_name == 'pull_request'
+        run: terraform plan
+        working-directory: ./terraform
+
+      - name: 'Terraform Apply'
+        if: github.event_name == 'push'
         run: terraform apply -auto-approve
         working-directory: ./terraform
         env:
