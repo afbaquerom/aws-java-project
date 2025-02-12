@@ -1,6 +1,0 @@
-aws_region = "us-east-1"
-s3_bucket_name = "my-unique-s3-bucket-name"
-sqs_queue_name = "my-sqs-queue"
-lambda_function_name = "myLambdaFunction"
-ecs_service_name = "myEcsService"
-api_gateway_name = "myApiGateway"

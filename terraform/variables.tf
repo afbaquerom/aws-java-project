@@ -1,5 +1,5 @@
 variable "aws_region" {
-  description = "The AWS region where resources will be created"
+  description = "The AWS region to deploy the resources"
   type        = string
   default     = "us-east-1"
 }
@@ -10,10 +10,16 @@ variable "api_gateway_name" {
   default     = "MyApiGateway"
 }
 
+variable "ecs_service_name" {
+  description = "The name of the ECS service"
+  type        = string
+  default     = "MyEcsService"
+}
+
 variable "sqs_queue_name" {
   description = "The name of the SQS queue"
   type        = string
-  default     = "MySQSQueue"
+  default     = "MySqsQueue"
 }
 
 variable "lambda_function_name" {
@@ -28,14 +34,8 @@ variable "s3_bucket_name" {
   default     = "my-s3-bucket-unique-name"
 }
 
-variable "ecs_service_name" {
-  description = "The name of the ECS service"
+variable "cloudwatch_log_group" {
+  description = "The name of the CloudWatch log group"
   type        = string
-  default     = "MyECSService"
-}
-
-variable "ecs_task_definition_name" {
-  description = "The name of the ECS task definition"
-  type        = string
-  default     = "MyECSTaskDefinition"
+  default     = "MyLogGroup"
 }
